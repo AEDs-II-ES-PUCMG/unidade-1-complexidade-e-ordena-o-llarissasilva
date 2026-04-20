@@ -83,8 +83,7 @@ public class App {
             Integer[] vetor = gerarVetorObjetos(tam[i]);
             BubbleSort<Integer> bolha = new BubbleSort<>();
             bolha.ordenar(vetor);
-            System.out.println("\n--- Tamanho " + tam[i] + " ---");
-            System.out.println("Vetor ordenado método Bolha:");
+            System.out.println("\nVetor ordenado método Bolha:");
             System.out.println("Comparações: " + bolha.getComparacoes());
             System.out.println("Movimentações: " + bolha.getMovimentacoes());
             System.out.println("Tempo de ordenação (ms): " + bolha.getTempoOrdenacao());

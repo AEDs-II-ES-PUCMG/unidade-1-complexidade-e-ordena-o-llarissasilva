@@ -36,9 +36,7 @@ public class AppOficina {
 
     static final int MAX_PEDIDOS = 100;
     static Produto[] produtos;
-    /** Cópia ordenada por identificador — usada em busca binária por código. */
     static Produto[] produtosPorIdentificador;
-    /** Cópia ordenada por descrição — usada em busca binária por texto. */
     static Produto[] produtosPorDescricao;
     static int quantProdutos = 0;
     static String nomeArquivoDados = "produtos.txt";
@@ -92,7 +90,7 @@ public class AppOficina {
         System.out.println("2 - Inserção");
         System.out.println("3 - Seleção");
         System.out.println("4 - Mergesort");
-        System.out.println("0 - Voltar ao menu principal");
+        System.out.println("0 - Voltar");
 
         Integer op = lerNumero("Digite sua opção", Integer.class);
         return op != null ? op : -1;
@@ -100,7 +98,7 @@ public class AppOficina {
 
     static int exibirMenuComparadores() {
         cabecalho();
-        System.out.println("1 - Por identificador (código)");
+        System.out.println("1 - Por código");
         System.out.println("2 - Por descrição");
 
         Integer op = lerNumero("Digite sua opção", Integer.class);
@@ -119,11 +117,7 @@ public class AppOficina {
 
             dadosCarregados = new Produto[tamanho];
             while (dados.hasNextLine()) {
-                String linha = dados.nextLine();
-                if (linha.trim().isEmpty()) {
-                    continue;
-                }
-                Produto novoProduto = Produto.criarDoTexto(linha);
+                Produto novoProduto = Produto.criarDoTexto(dados.nextLine());
                 dadosCarregados[quantProdutos] = novoProduto;
                 quantProdutos++;
             }
@@ -135,9 +129,6 @@ public class AppOficina {
         return dadosCarregados;
     }
 
-    /**
-     * Após o carregamento, mantém duas cópias estáveis ordenadas para busca binária O(log n).
-     */
     static void prepararIndicesOrdenados() {
         if (quantProdutos == 0) {
             produtosPorIdentificador = null;
@@ -197,9 +188,9 @@ public class AppOficina {
 
     static Produto localizarProduto() {
         cabecalho();
-        System.out.println("Localizando um produto (busca binária)");
+        System.out.println("Localizando um produto");
         System.out.println("1 - Por identificador");
-        System.out.println("2 - Por descrição exata (como cadastrada)");
+        System.out.println("2 - Por descrição");
         Integer modo = lerNumero("Opção", Integer.class);
         if (modo == null) {
             return null;
@@ -212,17 +203,16 @@ public class AppOficina {
             return buscaBinariaPorIdentificador(id);
         }
         if (modo == 2) {
-            System.out.print("Descrição exata: ");
+            System.out.print("Descrição: ");
             String desc = teclado.nextLine();
             return buscaBinariaPorDescricao(desc);
         }
-        System.out.println("Opção inválida.");
         return null;
     }
 
     private static void mostrarProduto(Produto produto) {
         cabecalho();
-        String mensagem = "Produto não encontrado.";
+        String mensagem = "Dados inválidos";
 
         if (produto != null) {
             mensagem = String.format("Dados do produto:\n%s", produto);
@@ -275,25 +265,17 @@ public class AppOficina {
 
     static void executarOrdenacao(int opcaoAlgoritmo, Comparator<Produto> comparador) {
         if (comparador == null || quantProdutos == 0) {
-            System.out.println("Não há dados para ordenar ou critério inválido.");
             return;
         }
         IOrdenador<Produto> ordenador = criarOrdenador(opcaoAlgoritmo);
         if (ordenador == null) {
-            System.out.println("Algoritmo inválido.");
             return;
         }
         Produto[] copia = Arrays.copyOf(produtos, quantProdutos);
-        Produto[] resultado = ordenador.ordenar(copia, comparador);
-        System.out.println("\n--- Resultado da ordenação ---");
-        System.out.println("Comparações: " + ordenador.getComparacoes());
+        ordenador.ordenar(copia, comparador);
+        System.out.println("\nComparações: " + ordenador.getComparacoes());
         System.out.println("Movimentações: " + ordenador.getMovimentacoes());
         System.out.println("Tempo de ordenação (ms): " + ordenador.getTempoOrdenacao());
-        System.out.println("\nPrimeiros registros (amostra):");
-        int limite = Math.min(15, resultado.length);
-        for (int i = 0; i < limite; i++) {
-            System.out.println(resultado[i]);
-        }
     }
 
     static void ordenarProdutos() {
@@ -368,7 +350,6 @@ public class AppOficina {
                     System.out.println("FLW VLW OBG VLT SMP.");
                     break;
                 default:
-                    System.out.println("Opção inválida.");
                     break;
             }
             if (opcao != 0) {

@@ -87,7 +87,6 @@ public abstract class Produto implements Comparable<Produto> {
      */
     public abstract double valorDeVenda();
 
-    /** Descrição textual do produto (usada em ordenação e busca). */
     public String getDescricao() {
         return descricao;
     }
